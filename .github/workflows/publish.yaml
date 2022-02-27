@@ -6,7 +6,6 @@ on:
   pull_request:
 
 jobs:
-  # define job to build and publish docker image
   build_and_publish:
     runs-on: ubuntu-latest
     steps:
@@ -24,11 +23,19 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: 🏷 Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: ghcr.io/nielsrowinbik/media-assistant
+
       - name: 🛠 Build image and push to GitHub Container Registry
         uses: docker/build-push-action@v2
         with:
-          context: ./
-          push: ${{ github.ref == 'refs/heads/main' }}
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
 
       - name: 🧾 Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
