@@ -1,0 +1,54 @@
+{
+  "name": "media-assistant",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "next build",
+    "dev": "next dev",
+    "lint": "next lint",
+    "start": "next start",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nielsrowinbik/media-assistant.git"
+  },
+  "author": {
+    "name": "Niels Bik",
+    "email": "hey@nielsbik.nl",
+    "url": "https://nielsbik.nl"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/nielsrowinbik/media-assistant/issues"
+  },
+  "homepage": "https://github.com/nielsrowinbik/media-assistant#readme",
+  "dependencies": {
+    "@headlessui/react": "^1.5.0",
+    "@heroicons/react": "^1.0.5",
+    "@tailwindcss/typography": "^0.5.2",
+    "@types/lodash.debounce": "^4.0.6",
+    "embla-carousel-react": "^6.2.0",
+    "lodash.debounce": "^4.0.8",
+    "next": "^12.1.0",
+    "qs": "^6.10.3",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "slugify": "^1.6.5",
+    "swr": "^1.2.2"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.18",
+    "@types/qs": "^6.9.7",
+    "@types/react": "^17.0.39",
+    "autoprefixer": "^10.4.2",
+    "eslint": "8.9.0",
+    "eslint-config-next": "12.1.0",
+    "eslint-config-prettier": "^8.4.0",
+    "postcss": "^8.4.6",
+    "prettier": "^2.5.1",
+    "prettier-plugin-tailwindcss": "^0.1.7",
+    "tailwindcss": "^3.0.23"
+  }
+}
