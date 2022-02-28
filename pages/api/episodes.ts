@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { Episode } from "../../lib/types";
-import { getEpisodes } from "../../lib/episodes";
+import { Episode } from "@/lib/types";
+import { getEpisodes } from "@/lib/episodes";
 
 const handler = async (
   req: NextApiRequest,

@@ -1,11 +1,11 @@
 import { ArrowLeftIcon, BookmarkIcon } from "@heroicons/react/solid";
-import type { Episode, Show } from "../../../lib/types";
+import type { Episode, Show } from "@/lib/types";
 import { BookmarkIcon as BookmarkIconOutline } from "@heroicons/react/outline";
 import { Disclosure } from "@headlessui/react";
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
-import fetcher from "../../../lib/fetcher";
+import fetcher from "@/lib/fetcher";
 import qs from "qs";
 import { useRouter } from "next/router";
 import useSWR from "swr";

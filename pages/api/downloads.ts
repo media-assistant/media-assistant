@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { Download } from "../../lib/types";
-import { getMovieQueue } from "../../lib/downloads";
+import { Download } from "@/lib/types";
+import { getMovieQueue } from "@/lib/downloads";
 
 const handler = async (
   req: NextApiRequest,

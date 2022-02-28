@@ -4,17 +4,17 @@ import {
   HeartIcon,
   PlayIcon,
 } from "@heroicons/react/solid";
-import type { Download, Movie } from "../../../lib/types";
-import ActionsBar from "../../../components/ActionsBar";
+import type { Download, Movie } from "@/lib/types";
+import ActionsBar from "@/components/ActionsBar";
 import { BookmarkIcon as BookmarkIconOutline } from "@heroicons/react/outline";
 import { Disclosure } from "@headlessui/react";
 import Head from "next/head";
-import IconButtonWithLabel from "../../../components/IconButtonWithLabel";
+import IconButtonWithLabel from "@/components/IconButtonWithLabel";
 import Image from "next/image";
 import Link from "next/link";
-import Well from "../../../components/Well";
+import Well from "@/components/Well";
 import cn from "classnames";
-import fetcher from "../../../lib/fetcher";
+import fetcher from "@/lib/fetcher";
 import qs from "qs";
 import { useRouter } from "next/router";
 import useSWR from "swr";
