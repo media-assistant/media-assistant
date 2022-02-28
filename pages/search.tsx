@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import { Combobox } from "@headlessui/react";
+import Image from "next/image";
 import { Movie } from "../lib/types";
-import debounce from "lodash.debounce";
+import { debounce } from "lodash";
 import { get } from "../lib/fetcher";
 import { useRouter } from "next/router";
 
@@ -48,8 +49,20 @@ const SearchPage = () => {
               const { title, tmdbId } = movie;
 
               return (
-                <Combobox.Option key={tmdbId} value={movie}>
-                  {title}
+                <Combobox.Option
+                  className="flex items-center space-x-4"
+                  key={tmdbId}
+                  value={movie}
+                >
+                  <div className="relative aspect-poster w-[10%]">
+                    <Image
+                      alt={`Poster for ${movie.title}`}
+                      className="rounded-md"
+                      layout="fill"
+                      src={movie.poster}
+                    />
+                  </div>
+                  <span>{title}</span>
                 </Combobox.Option>
               );
             })}
