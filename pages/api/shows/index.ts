@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import type { Show } from "../../../lib/types";
-import { getAllShows } from "../../../lib/shows";
+import type { Show } from "@/lib/types";
+import { getAllShows } from "@/lib/shows";
 
 const handler = async (req: NextApiRequest, res: NextApiResponse<Show[]>) => {
   if (req.method === "GET") {

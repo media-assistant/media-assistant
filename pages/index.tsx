@@ -1,7 +1,7 @@
-import type { Movie, Show } from "../lib/types";
-import Carousel from "../components/Carousel";
+import type { Movie, Show } from "@/lib/types";
+import Carousel from "@/components/Carousel";
 import Image from "next/image";
-import fetcher from "../lib/fetcher";
+import fetcher from "@/lib/fetcher";
 import useSWR from "swr";
 
 const IndexPage = () => {

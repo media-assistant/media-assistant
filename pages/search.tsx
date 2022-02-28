@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from "react";
 import { Combobox } from "@headlessui/react";
 import Image from "next/image";
-import { Movie } from "../lib/types";
+import { Movie } from "@/lib/types";
 import { debounce } from "lodash";
-import { get } from "../lib/fetcher";
+import { get } from "@/lib/fetcher";
 import { useRouter } from "next/router";
 
 const SearchPage = () => {

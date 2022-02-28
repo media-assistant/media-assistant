@@ -1,6 +1,6 @@
-import type { ApiError, Show } from "../../../lib/types";
+import type { ApiError, Show } from "@/lib/types";
 import type { NextApiRequest, NextApiResponse } from "next";
-import { getRecentShows } from "../../../lib/shows";
+import { getRecentShows } from "@/lib/shows";
 
 const handler = async (
   req: NextApiRequest,
