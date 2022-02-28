@@ -5,18 +5,49 @@ import slugify from "slugify";
 const apiKey = process.env.RADARR_API_KEY;
 const apiUrl = `${process.env.RADARR_URL}/api/v3`;
 
-// These params need to be present to add a movie:
-// {
-// 	"addOptions": {
-// 		"searchForMovie": true // Will make it add it to downloads, which is what we want by default
-// 	},
-// 	"title": "The Godfather",
-// 	"tmdbId": 238,
-// 	"rootFolderPath": "/films", // We need to get this somehow, maybe we can get this from the config endpoint?
-// 	"qualityProfileId": 7 // We need to get this somehow, maybe we can get this from the config endpoint?
-// }
+export const addMovie = async (tmdbId: number, title: string) => {
+  const params = qs.stringify({ apiKey });
+  const body = {
+    addOptions: {
+      searchForMovie: true, // This will make Radarr immediately start searching for a download, which is what we want
+    },
+    qualityProfileId: 7, // FIXME: We need to get this from the user somehow
+    rootFolderPath: "/films", // FIXME: We need to get this from the user somehow
+    title,
+    tmdbId,
+  };
+  const response = await fetch(`${apiUrl}/movie?${params}`, {
+    body: JSON.stringify(body),
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "POST",
+  });
 
-// To delete a movie we just call DELETE on /movie/{id} (with its movie id, not the tmdb id) and pass in a query param of `deleteFiles: true` to delete the files.
+  if (response.status !== 201) {
+    // TODO: Proper error handling
+    return undefined;
+  }
+
+  const movie = await response.json();
+  return transform(movie);
+};
+
+export const deleteMovie = async (tmdbId: number) => {
+  const movie = await getMovie(tmdbId);
+
+  // TODO: Handle edge cases such as the movie being undefined
+
+  const params = qs.stringify({ apiKey });
+  const response = await fetch(`${apiUrl}/movie/${movie.id}?${params}`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "DELETE",
+  });
+
+  // TODO: Handle the repsonse
+};
 
 export const getMovie = async (
   tmdbId: number,
