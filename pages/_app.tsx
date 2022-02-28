@@ -1,6 +1,6 @@
-import "../styles/global.css";
+import "@/styles/global.css";
 import type { AppProps } from "next/app";
-import Nav from "../components/Nav";
+import Nav from "@/components/Nav";
 
 const App = ({ Component, pageProps }: AppProps) => (
   <>

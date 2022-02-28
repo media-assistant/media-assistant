@@ -5,6 +5,19 @@ import slugify from "slugify";
 const apiKey = process.env.RADARR_API_KEY;
 const apiUrl = `${process.env.RADARR_URL}/api/v3`;
 
+// These params need to be present to add a movie:
+// {
+// 	"addOptions": {
+// 		"searchForMovie": true // Will make it add it to downloads, which is what we want by default
+// 	},
+// 	"title": "The Godfather",
+// 	"tmdbId": 238,
+// 	"rootFolderPath": "/films", // We need to get this somehow, maybe we can get this from the config endpoint?
+// 	"qualityProfileId": 7 // We need to get this somehow, maybe we can get this from the config endpoint?
+// }
+
+// To delete a movie we just call DELETE on /movie/{id} (with its movie id, not the tmdb id) and pass in a query param of `deleteFiles: true` to delete the files.
+
 export const getMovie = async (
   tmdbId: number,
   title?: string
@@ -82,12 +95,14 @@ export const searchMovies = async (
 // Function to convert Radarr's API response to our own:
 const transform = ({
   added,
+  certification,
   genres,
   hasFile,
   title,
   monitored,
   overview,
   images,
+  ratings,
   runtime,
   year,
   youTubeTrailerId,
@@ -96,13 +111,16 @@ const transform = ({
 }): Movie => ({
   added: added === "0001-01-01T00:00:00Z" ? false : new Date(added),
   canWatch: hasFile,
+  certification,
   fanart: images[1]?.remoteUrl,
   genres,
   id,
   monitored,
   overview,
   poster: images[0]?.remoteUrl,
+  rating: ratings.value * 10,
   runtime,
+  runtimeString: `${Math.floor(runtime / 60)} hr ${runtime % 60} min`,
   slug: slugify(title, { lower: true }),
   title,
   tmdbId,
