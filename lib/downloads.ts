@@ -1,4 +1,5 @@
-import type { Download } from "./types";
+import type { Download, RadarrDownload } from "./types";
+import { get } from "@/lib/fetch";
 import qs from "qs";
 
 const apiKey = process.env.RADARR_API_KEY;
@@ -8,20 +9,17 @@ export const getMovieQueue = async (
   movieId: number
 ): Promise<Download[] | undefined> => {
   const params = qs.stringify({ apiKey, movieId });
-  const response = await fetch(`${apiUrl}/queue/details?${params}`);
-
-  // If Radarr responds with anything but a 200 status OK,
-  // just return an empty list of downloads:
-  if (response.status !== 200) return [];
-
-  const queue = await response.json();
+  const queue = await get<RadarrDownload[]>(
+    `${apiUrl}/queue/details?${params}`
+  );
 
   // If a response comes back that is not an empty array,
   // return the first (and only) item:
   return queue.map(transform);
 };
 
-const transform = ({ size, sizeleft }): Download => ({
+const transform = ({ size, sizeleft }: RadarrDownload): Download => ({
+  // @ts-expect-error TODO: remove this line after properly typing RadarrDownload
   progress: 1 - sizeleft / size,
   status: "downloading",
 });

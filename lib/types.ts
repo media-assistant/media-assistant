@@ -1,3 +1,5 @@
+export type RadarrDownload = Record<string, unknown>;
+
 export type Download = {
   status: "downloading"; // TODO: Can we define the different types here?
   progress: number;
@@ -63,6 +65,7 @@ export type Movie = {
   added: Date | boolean; // Shows when the movie was added to our library. False if it hasn't been added yet.
   canWatch: boolean; // Shows whether there's a file present that could be played.
   certification: string; // Certification of the movie. Example: `R`.
+  downloads: Download[];
   fanart?: string; // URL pointing at the fan art for this movie. Optional.
   genres: string[]; // Array of three (at most) genres for this movie.
   id: number; // ID for the movie within the Radarr database.
