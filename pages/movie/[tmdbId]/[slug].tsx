@@ -14,7 +14,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Well from "@/components/Well";
 import cn from "classnames";
-import fetcher from "@/lib/fetcher";
+import { get } from "@/lib/fetch";
 import qs from "qs";
 import { useRouter } from "next/router";
 import useSWR from "swr";
@@ -26,11 +26,11 @@ const MovieDetail = () => {
 
   const { data: movie } = useSWR<Movie>(
     () => `/api/movie/${tmdbId}?${qs.stringify({ title: slug })}`,
-    fetcher
+    get
   );
   const { data: download } = useSWR<Download[]>(
     () => `/api/downloads?${qs.stringify({ movieId: movie.id })}`,
-    fetcher
+    get
   );
 
   if (!movie || !download) return <div>loading...</div>;
