@@ -1,16 +1,62 @@
-export type ApiError = {
-  error: string;
-};
-
 export type Download = {
   status: "downloading"; // TODO: Can we define the different types here?
   progress: number;
 };
 
-export type Episode = {
-  overview: string;
-  season: number;
+export type RadarrMovie = {
+  id: number;
   title: string;
+  originalTitle?: string;
+  alternateTitles?: Array<{
+    sourceType: string;
+    movieId: number;
+    title: string;
+    sourceId: number;
+    votes: number;
+    voteCount: number;
+    language: {
+      id: number;
+      name: string;
+    };
+    id: number;
+  }>;
+  sortTile: string;
+  sizeOnDisk: number;
+  overview: string;
+  inCinemas: string;
+  physicalRelease: string;
+  images: Array<{
+    coverType: string;
+    url: string;
+    remoteUrl: string;
+  }>;
+  website: string;
+  year: number;
+  hasFile: boolean;
+  youTubeTrailerId: string;
+  studio: string;
+  path: string;
+  rootFolderPath: string;
+  qualityProfileId: number;
+  monitored: boolean;
+  minimumAvailability: "released" | unknown;
+  isAvailable: boolean;
+  folderName: string;
+  runtime: number;
+  cleanTitle: string;
+  imdbId: string;
+  tmdbId: number;
+  titleSlug: string;
+  certification: string;
+  genres: string[];
+  tags: string[];
+  added: string;
+  ratings: {
+    votes: number;
+    value: number;
+  };
+  collection: unknown;
+  status: string;
 };
 
 export type Movie = {
@@ -31,16 +77,4 @@ export type Movie = {
   tmdbId: number; // The Movie DB id for this movie.
   year: number; // Release year of this movie.
   youTubeTrailerId?: string; // YouTube ID for the trailer for this movie. Optional.
-};
-
-export type Show = {
-  added: Date | boolean;
-  fanart?: string;
-  id: number;
-  overview: string;
-  poster?: string;
-  slug: string;
-  title: string;
-  tvdbId: number;
-  year: number;
 };

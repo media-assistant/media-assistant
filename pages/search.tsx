@@ -3,7 +3,7 @@ import { Combobox } from "@headlessui/react";
 import Image from "next/image";
 import { Movie } from "@/lib/types";
 import { debounce } from "lodash";
-import { get } from "@/lib/fetcher";
+import { get } from "@/lib/fetch";
 import { useRouter } from "next/router";
 
 const SearchPage = () => {
@@ -14,7 +14,7 @@ const SearchPage = () => {
 
   const fetchOptions = useCallback(
     debounce(async (query: string) => {
-      const { data } = await get(`/api/movies/search?query=${query}`);
+      const data = await get<Movie[]>(`/api/movies/search?query=${query}`);
       // const { data } = await get(`/api/shows/search?query=${query}`);
       if (data) {
         setOptions(data);

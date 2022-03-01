@@ -1,100 +1,87 @@
-import type { Movie } from "./types";
+import type { Movie, RadarrMovie } from "./types";
+import { del, get, post } from "@/lib/fetch";
 import qs from "qs";
 import slugify from "slugify";
 
 const apiKey = process.env.RADARR_API_KEY;
 const apiUrl = `${process.env.RADARR_URL}/api/v3`;
 
-export const addMovie = async (tmdbId: number, title: string) => {
+export const addMovie = async (
+  tmdbId: number,
+  title: string,
+  qualityProfileId: number = 7,
+  rootFolderPath: string = "/films"
+) => {
   const params = qs.stringify({ apiKey });
   const body = {
     addOptions: {
       searchForMovie: true, // This will make Radarr immediately start searching for a download, which is what we want
     },
-    qualityProfileId: 7, // FIXME: We need to get this from the user somehow
-    rootFolderPath: "/films", // FIXME: We need to get this from the user somehow
+    qualityProfileId, // FIXME: We need to get this from the user somehow
+    rootFolderPath, // FIXME: We need to get this from the user somehow
     title,
     tmdbId,
   };
-  const response = await fetch(`${apiUrl}/movie?${params}`, {
-    body: JSON.stringify(body),
-    headers: {
-      "Content-Type": "application/json",
-    },
-    method: "POST",
-  });
 
-  if (response.status !== 201) {
-    // TODO: Proper error handling
-    return undefined;
-  }
+  const movie = await post<RadarrMovie>(`${apiUrl}/movie?${params}`, body);
 
-  const movie = await response.json();
   return transform(movie);
 };
 
 export const deleteMovie = async (tmdbId: number) => {
+  // First, get the movie because we don't know its Radarr id:
   const movie = await getMovie(tmdbId);
 
-  // TODO: Handle edge cases such as the movie being undefined
+  // If the movie could not be found, silently fail as if it was
+  // properly deleted:
+  if (!movie) return;
 
+  // Next, delete it:
   const params = qs.stringify({ apiKey });
-  const response = await fetch(`${apiUrl}/movie/${movie.id}?${params}`, {
-    headers: {
-      "Content-Type": "application/json",
-    },
-    method: "DELETE",
-  });
-
-  // TODO: Handle the repsonse
+  await del(`${apiUrl}/movie/${movie.id}?${params}`);
 };
 
 export const getMovie = async (
   tmdbId: number,
   title?: string
 ): Promise<Movie | undefined> => {
-  const movieParams = qs.stringify({ apiKey, tmdbId });
-  const movieResponse = await fetch(`${apiUrl}/movie?${movieParams}`);
+  const params = qs.stringify({ apiKey, tmdbId });
+  const movieList = await get<RadarrMovie[]>(`${apiUrl}/movie?${params}`);
 
-  // If Radarr responds with anything but a 200 status OK,
-  // just return undefined:
-  if (movieResponse.status !== 200) {
-    // TODO: Proper error handling (maybe throw?)
-    return undefined;
-  }
-
-  const movieList = await movieResponse.json();
-
-  // If a response comes back that is not an empty array,
-  // return the first (and only) item:
-  if (movieList.length > 0) {
+  // If the requested movie is part of the user's library, it should be
+  // the only item returned by Radarr. If that is the case, return it:
+  if (movieList.length === 1 && movieList[0].tmdbId === tmdbId) {
     return transform(movieList[0]);
   }
 
-  // If the response is an empty list, check if a title
-  // to look for was provided. If not, return undefined:
+  // If the movie is not a part of the user's library, we can look it up
+  // by its title, but only if the title was provided. If it wasn't, there's
+  // nothing we can do:
   if (!title) {
+    // Should we throw here, just like a failed `get` will throw?
     return undefined;
   }
 
-  // Otherwise, with the title, attempt to look up the movie:
+  // Attempt to look up the movie:
   const lookupList = await searchMovies(title);
 
   // The movie we're looking for should be among the
-  // search results, so look for its TMDB ID and return it
-  // (returns undefined if it cannot be found):
-  return lookupList.find((result) => result.tmdbId === tmdbId);
+  // search results, so look for its TMDB ID:
+  const movie = lookupList.find((result) => result.tmdbId === tmdbId);
+
+  // If the movie is not within the search results, there's nothing we can do:
+  if (!movie) {
+    // Should we throw here, just like a failed `get` will throw?
+    return undefined;
+  }
+
+  // If it was, cool! Return it:
+  return movie;
 };
 
 export const getAllMovies = async (): Promise<Movie[]> => {
-  const movieParams = qs.stringify({ apiKey });
-  const movieResponse = await fetch(`${apiUrl}/movie?${movieParams}`);
-
-  // If Radarr responds with anything but a 200 status OK,
-  // just return an empty list of results:
-  if (movieResponse.status !== 200) return [];
-
-  const movieList = await movieResponse.json();
+  const params = qs.stringify({ apiKey });
+  const movieList = await get<RadarrMovie[]>(`${apiUrl}/movie?${params}`);
   return movieList.map(transform);
 };
 
@@ -111,16 +98,12 @@ export const searchMovies = async (
   // API, and just return an empty lits of results:
   if (term.length < 2) return [];
 
-  const lookupParams = qs.stringify({ apiKey, term });
-  const lookupResponse = await fetch(`${apiUrl}/movie/lookup?${lookupParams}`);
+  const params = qs.stringify({ apiKey, term });
+  const movieList = await get<RadarrMovie[]>(
+    `${apiUrl}/movie/lookup?${params}`
+  );
 
-  // If Radarr responds with anything but a 200 status OK,
-  // just return an empty list of results:
-  if (lookupResponse.status !== 200) return [];
-
-  const movieList = await lookupResponse.json();
-
-  return movieList.map(transform).slice(0, limit);
+  return movieList.slice(0, limit).map(transform);
 };
 
 // Function to convert Radarr's API response to our own:
@@ -139,7 +122,7 @@ const transform = ({
   youTubeTrailerId,
   id,
   tmdbId,
-}): Movie => ({
+}: RadarrMovie): Movie => ({
   added: added === "0001-01-01T00:00:00Z" ? false : new Date(added),
   canWatch: hasFile,
   certification,
