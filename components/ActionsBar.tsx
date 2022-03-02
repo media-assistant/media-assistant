@@ -1,28 +1,29 @@
-import type { ElementType, ReactNode } from "react";
+import type { ComponentPropsWithoutRef, ElementType, ReactNode } from "react";
+import cn from "classnames";
 
-type Root = {
-  as?: ElementType;
+type BaseProps<T extends ElementType> = {
+  as?: T;
   children?: ReactNode;
-  [key: string]: any;
 };
 
-const Root = ({ as: Component = "ul", children, ...props }: Root) => (
-  <Component
-    className="not-prose flex w-full items-center justify-center space-x-2"
-    {...props}
-  >
-    {children}
-  </Component>
-);
-
-type Item = {
-  as?: ElementType;
-  children?: ReactNode;
-  [key: string]: any;
+const Root = <T extends ElementType>({
+  as,
+  ...props
+}: BaseProps<T> & ComponentPropsWithoutRef<T>) => {
+  const Component = as || "ul";
+  const className = cn(
+    props.className,
+    "not-prose flex w-full items-center justify-center space-x-2"
+  );
+  return <Component {...props} className={className} />;
 };
 
-const Item = ({ as: Component = "li", children, ...props }: Item) => (
-  <Component {...props}>{children}</Component>
-);
+const Item = <T extends ElementType>({
+  as,
+  ...props
+}: BaseProps<T> & ComponentPropsWithoutRef<T>) => {
+  const Component = as || "li";
+  return <Component {...props} />;
+};
 
 export default Object.assign(Root, { Item });
