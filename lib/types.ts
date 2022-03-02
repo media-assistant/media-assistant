@@ -68,6 +68,7 @@ export type Movie = {
   fanart?: string; // URL pointing at the fan art for this movie. Optional.
   genres: string[]; // Array of three (at most) genres for this movie.
   id?: number; // ID for the movie within the Radarr database.
+  inLibrary: boolean; //Shows whether the movie has been added to our library.
   monitored: boolean; // Whether the movie is monitored or not. Should be true when `added` is a date.
   overview: string; // Brief summary of the movie.
   poster?: string; // URL pointing at the poster for this movie. Optional.

@@ -183,6 +183,7 @@ const transform = ({
   fanart: images[1]?.remoteUrl,
   genres,
   ...(id && { id }),
+  inLibrary: Date.parse(added) > 0,
   monitored,
   overview,
   poster: images[0]?.remoteUrl,
