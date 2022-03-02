@@ -15,12 +15,16 @@ const IndexPage = ({ movies }: IndexPage) => {
       <Head>
         <title>Media Assistant</title>
       </Head>
-      <header></header>
-      <main className="space-y-8">
+      <main className="space-y-8 px-6">
         <section>
           <h2 className="text-xl font-bold">Recently added movies</h2>
-          <Carousel align="start" skipSnaps slidesToScroll={2}>
-            {movies.map(({ poster, slug, title, tmdbId }) => (
+          <Carousel
+            align="start"
+            className="-mx-6"
+            skipSnaps
+            slidesToScroll={2}
+          >
+            {movies.map(({ poster, slug, title, tmdbId }, i) => (
               <Carousel.LinkItem href={`/movie/${tmdbId}/${slug}`} key={tmdbId}>
                 <div className="relative h-full w-full">
                   <Image
