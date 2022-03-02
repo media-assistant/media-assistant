@@ -22,7 +22,10 @@ const MovieDetail = ({ movie }: MovieDetail) => {
   const { data: download } = useSWR<Download[]>(
     movie.id && `/api/downloads?${qs.stringify({ movieId: movie.id })}`,
     get,
-    { refreshInterval: 1000 }
+    {
+      ...(!movie.canWatch && { refreshInterval: 1000 }),
+      revalidateOnFocus: false,
+    }
   );
 
   return (
