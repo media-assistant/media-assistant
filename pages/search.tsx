@@ -14,8 +14,7 @@ const SearchPage = () => {
 
   const fetchOptions = useCallback(
     debounce(async (query: string) => {
-      const data = await get<Movie[]>(`/api/movies/search?query=${query}`);
-      // const { data } = await get(`/api/shows/search?query=${query}`);
+      const data = await get<Movie[]>(`/api/search?query=${query}`);
       if (data) {
         setOptions(data);
       }

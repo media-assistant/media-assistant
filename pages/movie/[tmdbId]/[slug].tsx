@@ -8,6 +8,7 @@ import type { Download, Movie } from "@/lib/types";
 import ActionsBar from "@/components/ActionsBar";
 import { BookmarkIcon as BookmarkIconOutline } from "@heroicons/react/outline";
 import { Disclosure } from "@headlessui/react";
+import type { GetServerSideProps } from "next";
 import Head from "next/head";
 import IconButtonWithLabel from "@/components/IconButtonWithLabel";
 import Image from "next/image";
@@ -15,25 +16,20 @@ import Link from "next/link";
 import Well from "@/components/Well";
 import cn from "classnames";
 import { get } from "@/lib/fetch";
+import { getMovie } from "@/lib/movies";
 import qs from "qs";
-import { useRouter } from "next/router";
 import useSWR from "swr";
 
-const MovieDetail = () => {
-  const { query } = useRouter();
-  const slug = query.slug as string;
-  const tmdbId = parseInt(query.tmdbId as string);
+type MovieDetail = {
+  movie: Movie;
+};
 
-  const { data: movie } = useSWR<Movie>(
-    () => `/api/movie/${tmdbId}?${qs.stringify({ title: slug })}`,
-    get
-  );
+const MovieDetail = ({ movie }: MovieDetail) => {
   const { data: download } = useSWR<Download[]>(
-    () => `/api/downloads?${qs.stringify({ movieId: movie.id })}`,
-    get
+    movie.id && `/api/downloads?${qs.stringify({ movieId: movie.id })}`,
+    get,
+    { refreshInterval: 1000 }
   );
-
-  if (!movie || !download) return <div>loading...</div>;
 
   return (
     <>
@@ -117,6 +113,8 @@ const MovieDetail = () => {
           </Disclosure>
         </section>
         <ActionsBar as="section">
+          {/* TODO: When button is clicked and movie is not in the library, add it */}
+          {/* TODO: When button is clicked and movie IS in the library, remove it (have the user confirm choice!) */}
           <ActionsBar.Item
             as={IconButtonWithLabel}
             icon={movie.added ? BookmarkIcon : BookmarkIconOutline}
@@ -133,7 +131,7 @@ const MovieDetail = () => {
           )}
 
           {/* Show a banner informing the user that the movie is being monitored: */}
-          {movie.added && download.length === 0 && !movie.canWatch && (
+          {movie.added && download?.length === 0 && !movie.canWatch && (
             <Well>
               <h3>This title isn&rsquo;t available to watch yet</h3>
               <p>
@@ -144,7 +142,7 @@ const MovieDetail = () => {
           )}
 
           {/* Show a banner informing the user of the download progress: */}
-          {movie.added && download.length > 0 && !movie.canWatch && (
+          {movie.added && download?.length > 0 && !movie.canWatch && (
             <Well>
               <h3>This title isn&rsquo;t available to watch yet</h3>
               <p>
@@ -153,10 +151,30 @@ const MovieDetail = () => {
               </p>
             </Well>
           )}
+
+          {/* TODO: Show a banner or another indication that this movie can be played  */}
         </section>
       </main>
     </>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+  const slug = params.slug as string;
+  const tmdbId = parseInt(params.tmdbId as string);
+  const movie = await getMovie(tmdbId, slug);
+
+  if (!movie) {
+    return {
+      notFound: true,
+    };
+  }
+
+  return {
+    props: {
+      movie,
+    },
+  };
 };
 
 export default MovieDetail;

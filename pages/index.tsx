@@ -1,14 +1,14 @@
 import Carousel from "@/components/Carousel";
+import type { GetServerSideProps } from "next";
 import Image from "next/image";
 import type { Movie } from "@/lib/types";
-import { get } from "@/lib/fetch";
-import useSWR from "swr";
+import { getRecentMovies } from "@/lib/movies";
 
-const IndexPage = () => {
-  const { data: movies } = useSWR<Movie[]>("/api/movies/recent?limit=6", get);
+type IndexPage = {
+  movies: Movie[];
+};
 
-  if (!movies) return <div>loading...</div>;
-
+const IndexPage = ({ movies }: IndexPage) => {
   return (
     <>
       <header></header>
@@ -34,6 +34,16 @@ const IndexPage = () => {
       </main>
     </>
   );
+};
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const movies = await getRecentMovies(6);
+
+  return {
+    props: {
+      movies,
+    },
+  };
 };
 
 export default IndexPage;

@@ -1,6 +1,5 @@
 import type { Movie, RadarrMovie } from "./types";
 import { del, get, post } from "@/lib/fetch";
-import { getMovieQueue } from "./downloads";
 import qs from "qs";
 import slugify from "slugify";
 
@@ -70,7 +69,6 @@ const _getMovieFromLibrary = async (tmdbId: number) => {
   // the only item returned by Radarr. If that is the case, return it:
   if (movieList.length === 1 && movieList[0].tmdbId === tmdbId) {
     const movie = movieList[0];
-    // TODO: Get downloads for this movie
     return transform(movie);
   }
 
@@ -120,11 +118,7 @@ export const getAllMovies = async (): Promise<Movie[]> => {
   const params = qs.stringify({ apiKey });
   const movieList = await get<RadarrMovie[]>(`${apiUrl}/movie?${params}`);
 
-  return movieList.map((movie) => {
-    // TODO: For each movie, check if we have an active download
-    const downloads = [];
-    return transform(movie, downloads);
-  });
+  return movieList.map((movie) => transform(movie));
 };
 
 /**
@@ -137,7 +131,9 @@ export const getAllMovies = async (): Promise<Movie[]> => {
  */
 export const getRecentMovies = async (limit: number = 10): Promise<Movie[]> => {
   const movies = await getAllMovies();
-  return movies.sort((a, b) => +b.added - +a.added).slice(0, limit);
+  return movies
+    .sort((a, b) => +Date.parse(b.added) - +Date.parse(a.added))
+    .slice(0, limit);
 };
 
 /**
@@ -165,37 +161,28 @@ export const searchMovies = async (
 };
 
 // Function to convert Radarr's API response to our own:
-const transform = (
-  {
-    added,
-    certification,
-    genres,
-    hasFile,
-    title,
-    monitored,
-    overview,
-    images,
-    ratings,
-    runtime,
-    year,
-    youTubeTrailerId,
-    id,
-    tmdbId,
-  }: RadarrMovie,
-  downloads: unknown[] = []
-): Movie => ({
-  added: added === "0001-01-01T00:00:00Z" ? false : new Date(added),
-  canWatch: hasFile,
+const transform = ({
+  added,
   certification,
-  // TODO: implement this transform
-  // TODO: move this transform elsewhere?
-  downloads: downloads.map(() => ({
-    progress: 0,
-    status: "downloading",
-  })),
+  genres,
+  hasFile,
+  title,
+  monitored,
+  overview,
+  images,
+  ratings,
+  runtime,
+  year,
+  youTubeTrailerId,
+  id,
+  tmdbId,
+}: RadarrMovie): Movie => ({
+  added,
+  canWatch: hasFile,
+  ...(certification && { certification }),
   fanart: images[1]?.remoteUrl,
   genres,
-  id,
+  ...(id && { id }),
   monitored,
   overview,
   poster: images[0]?.remoteUrl,

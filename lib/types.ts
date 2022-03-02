@@ -49,7 +49,7 @@ export type RadarrMovie = {
   imdbId: string;
   tmdbId: number;
   titleSlug: string;
-  certification: string;
+  certification?: string;
   genres: string[];
   tags: string[];
   added: string;
@@ -62,13 +62,12 @@ export type RadarrMovie = {
 };
 
 export type Movie = {
-  added: Date | boolean; // Shows when the movie was added to our library. False if it hasn't been added yet.
+  added: string; // Shows when the movie was added to our library. Epoch 0 if it hasn't been added yet.
   canWatch: boolean; // Shows whether there's a file present that could be played.
-  certification: string; // Certification of the movie. Example: `R`.
-  downloads: Download[];
+  certification?: string; // Certification of the movie. Example: `R`.
   fanart?: string; // URL pointing at the fan art for this movie. Optional.
   genres: string[]; // Array of three (at most) genres for this movie.
-  id: number; // ID for the movie within the Radarr database.
+  id?: number; // ID for the movie within the Radarr database.
   monitored: boolean; // Whether the movie is monitored or not. Should be true when `added` is a date.
   overview: string; // Brief summary of the movie.
   poster?: string; // URL pointing at the poster for this movie. Optional.
