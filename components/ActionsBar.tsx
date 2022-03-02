@@ -1,15 +1,11 @@
-import type { ComponentPropsWithoutRef, ElementType, ReactNode } from "react";
+import type { ComponentPropsWithoutRef, ElementType } from "react";
+import type { PolymorphicBase } from "@/lib/types";
 import cn from "classnames";
-
-type BaseProps<T extends ElementType> = {
-  as?: T;
-  children?: ReactNode;
-};
 
 const Root = <T extends ElementType>({
   as,
   ...props
-}: BaseProps<T> & ComponentPropsWithoutRef<T>) => {
+}: PolymorphicBase<T> & ComponentPropsWithoutRef<T>) => {
   const Component = as || "ul";
   const className = cn(
     props.className,
@@ -21,7 +17,7 @@ const Root = <T extends ElementType>({
 const Item = <T extends ElementType>({
   as,
   ...props
-}: BaseProps<T> & ComponentPropsWithoutRef<T>) => {
+}: PolymorphicBase<T> & ComponentPropsWithoutRef<T>) => {
   const Component = as || "li";
   return <Component {...props} />;
 };

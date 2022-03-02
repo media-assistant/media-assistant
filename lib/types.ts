@@ -1,4 +1,11 @@
+import type { ElementType, ReactNode } from "react";
+
 export type RadarrDownload = Record<string, unknown>;
+
+export type PolymorphicBase<T extends ElementType> = {
+  as?: T;
+  children?: ReactNode;
+};
 
 export type Download = {
   status: "downloading"; // TODO: Can we define the different types here?

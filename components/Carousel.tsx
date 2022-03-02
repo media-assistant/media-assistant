@@ -1,20 +1,23 @@
-import type { ElementType, ReactNode } from "react";
+import type { ComponentPropsWithoutRef, ElementType, ReactNode } from "react";
 import { identity, pickBy } from "lodash";
+import { useCallback, useEffect } from "react";
 import type { EmblaOptionsType } from "embla-carousel-react";
 import Link from "next/link";
 import type { LinkProps } from "next/link";
+import type { PolymorphicBase } from "@/lib/types";
+import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures";
 import cn from "classnames";
 import useEmblaCarousel from "embla-carousel-react";
 
-type CarouselRootProps = EmblaOptionsType & {
-  as?: ElementType;
-  children: ReactNode | undefined;
-  [key: string]: any; // Can we somehow make this respect the types mandated by the passed in "as" Component, if any?
+type ExtendedBase<T extends ElementType> = PolymorphicBase<T> & {
+  // eslint-disable-next-line no-unused-vars
+  onChange: (index: number) => void;
 };
 
-const CarouselRoot = ({
-  as: Component = "div",
+const CarouselRoot = <T extends ElementType>({
+  as,
   children,
+  onChange,
 
   // Embla options
   align,
@@ -31,7 +34,9 @@ const CarouselRoot = ({
   startIndex,
 
   ...props
-}: CarouselRootProps) => {
+}: ExtendedBase<T> & ComponentPropsWithoutRef<T> & EmblaOptionsType) => {
+  const Component = as || "div";
+
   const emblaOptions = pickBy(
     {
       align,
@@ -50,7 +55,34 @@ const CarouselRoot = ({
     identity
   );
 
-  const [emblaRef] = useEmblaCarousel(emblaOptions);
+  const [emblaRef, embla] = useEmblaCarousel(emblaOptions, [
+    WheelGesturesPlugin(),
+  ]);
+
+  // Helper function to safely get the currently selected index:
+  const getSelectedIndex = useCallback(
+    () => (embla ? embla.selectedScrollSnap() : 0),
+    [embla]
+  );
+
+  // Call `onChange` when a slide is selected:
+  const onSelect = useCallback(
+    () => onChange && onChange(getSelectedIndex()),
+    [getSelectedIndex, onChange]
+  );
+
+  // Listen to events so we can call `onChange`:
+  useEffect(() => {
+    if (!embla) return;
+
+    // Listen for select events:
+    embla.on("select", onSelect);
+
+    // Stop listening when component unmounts:
+    return () => {
+      embla.off("select", onSelect);
+    };
+  }, [embla, onSelect]);
 
   const className = cn(props.className, "overflow-hidden");
 
