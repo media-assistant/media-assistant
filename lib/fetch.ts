@@ -22,7 +22,11 @@ const customFetch = async <T>(
     throw await responseToError(response);
   }
 
-  return (await response.json()) as T;
+  try {
+    return (await response.json()) as T;
+  } catch (e) {
+    return;
+  }
 };
 
 const responseToError = async (response: Response): Promise<Error> => {
@@ -43,10 +47,6 @@ const responseToError = async (response: Response): Promise<Error> => {
 
   return new Error(message);
 };
-
-export const dataToInit = (data: GenericObject): RequestInit => ({
-  body: JSON.stringify(data),
-});
 
 export const get = async <T>(
   input: RequestInfo,
