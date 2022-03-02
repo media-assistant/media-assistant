@@ -61,7 +61,7 @@ const MovieDetail = ({ movie }: MovieDetail) => {
           </a>
         </div>
       </header>
-      <main>
+      <main className="px-6">
         <section className="prose prose-invert relative -mt-9">
           <h1>{movie.title}</h1>
           <p className="space-x-3 text-xs">
@@ -70,7 +70,7 @@ const MovieDetail = ({ movie }: MovieDetail) => {
               {movie.rating}%
             </span>
             {movie.certification && (
-              <span className="rounded-md border px-3 py-1">
+              <span className="rounded-sm border px-2 py-px">
                 {movie.certification}
               </span>
             )}
@@ -109,7 +109,7 @@ const MovieDetail = ({ movie }: MovieDetail) => {
             )}
           </Disclosure>
         </section>
-        <ActionsBar as="section">
+        <ActionsBar as="section" className="my-6">
           <ActionsBar.Item as={LibraryButton} movie={movie} />
         </ActionsBar>
         <section>
