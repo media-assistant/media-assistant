@@ -10,7 +10,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse<Movie[]>) => {
     return res.status(200).json(movies);
   }
 
-  return res.status(501);
+  return res.status(501).end();
 };
 
 export default handler;
