@@ -7,29 +7,25 @@ import slugify from "slugify";
 const apiKey = process.env.RADARR_API_KEY;
 const apiUrl = `${process.env.RADARR_URL}/api/v3`;
 
+const qualityProfileId = process.env.RADARR_QUALITY_PROFILE;
+const rootFolderPath = process.env.RADARR_FOLDER;
+
 /**
  * Adds the specfied movie to the user's Radarr library.
  *
  * @param tmdbId he The Movie DB ID for the movie to add
  * @param title The title of this movie
- * @param [qualityProfileId] The quality profile to use when downloading this movie
- * @param [rootFolderPath] The folder in which to place the files for this movie
  * @returns The added movie
  *
  */
-export const addMovie = async (
-  tmdbId: number,
-  title: string,
-  qualityProfileId: number = 7,
-  rootFolderPath: string = "/films"
-) => {
+export const addMovie = async (tmdbId: number, title: string) => {
   const params = qs.stringify({ apiKey });
   const body = {
     addOptions: {
-      searchForMovie: true, // This will make Radarr immediately start searching for a download, which is what we want
+      searchForMovie: true,
     },
-    qualityProfileId, // FIXME: We need to get this from the user somehow
-    rootFolderPath, // FIXME: We need to get this from the user somehow
+    qualityProfileId,
+    rootFolderPath,
     title,
     tmdbId,
   };
