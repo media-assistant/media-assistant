@@ -29,6 +29,8 @@ const CarouselRoot = ({
   slidesToScroll,
   speed,
   startIndex,
+
+  ...props
 }: CarouselRootProps) => {
   const emblaOptions = pickBy(
     {
@@ -50,8 +52,10 @@ const CarouselRoot = ({
 
   const [emblaRef] = useEmblaCarousel(emblaOptions);
 
+  const className = cn(props.className, "overflow-hidden");
+
   return (
-    <Component className="overflow-hidden" ref={emblaRef}>
+    <Component className={className} ref={emblaRef}>
       {/* FIXME: width of the items is now hardcoded and quite possibly wrong in most of the situations */}
       <div className="grid auto-cols-[35%] grid-flow-col gap-x-5">
         {children}
