@@ -1,17 +1,11 @@
-import {
-  ArrowLeftIcon,
-  BookmarkIcon,
-  HeartIcon,
-  PlayIcon,
-} from "@heroicons/react/solid";
+import { ArrowLeftIcon, HeartIcon, PlayIcon } from "@heroicons/react/solid";
 import type { Download, Movie } from "@/lib/types";
 import ActionsBar from "@/components/ActionsBar";
-import { BookmarkIcon as BookmarkIconOutline } from "@heroicons/react/outline";
 import { Disclosure } from "@headlessui/react";
 import type { GetServerSideProps } from "next";
 import Head from "next/head";
-import IconButtonWithLabel from "@/components/IconButtonWithLabel";
 import Image from "next/image";
+import LibraryButton from "@/components/LibraryButton";
 import Link from "next/link";
 import Well from "@/components/Well";
 import cn from "classnames";
@@ -113,17 +107,11 @@ const MovieDetail = ({ movie }: MovieDetail) => {
           </Disclosure>
         </section>
         <ActionsBar as="section">
-          {/* TODO: When button is clicked and movie is not in the library, add it */}
-          {/* TODO: When button is clicked and movie IS in the library, remove it (have the user confirm choice!) */}
-          <ActionsBar.Item
-            as={IconButtonWithLabel}
-            icon={movie.added ? BookmarkIcon : BookmarkIconOutline}
-            label={movie.added ? "In library" : "Library"}
-          />
+          <ActionsBar.Item as={LibraryButton} movie={movie} />
         </ActionsBar>
         <section>
           {/* Show a banner prompting the user to add the movie to his/her watchlist if he/she hasn't yet: */}
-          {!movie.added && (
+          {!movie.inLibrary && (
             <Well>
               <h3>This title isn&rsquo;t available to watch yet</h3>
               <p>Add it to your library to download it.</p>
@@ -131,7 +119,7 @@ const MovieDetail = ({ movie }: MovieDetail) => {
           )}
 
           {/* Show a banner informing the user that the movie is being monitored: */}
-          {movie.added && download?.length === 0 && !movie.canWatch && (
+          {movie.inLibrary && download?.length === 0 && !movie.canWatch && (
             <Well>
               <h3>This title isn&rsquo;t available to watch yet</h3>
               <p>
@@ -142,7 +130,7 @@ const MovieDetail = ({ movie }: MovieDetail) => {
           )}
 
           {/* Show a banner informing the user of the download progress: */}
-          {movie.added && download?.length > 0 && !movie.canWatch && (
+          {movie.inLibrary && download?.length > 0 && !movie.canWatch && (
             <Well>
               <h3>This title isn&rsquo;t available to watch yet</h3>
               <p>
