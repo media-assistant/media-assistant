@@ -6,13 +6,13 @@ import slugify from "slugify";
 const apiKey = process.env.RADARR_API_KEY;
 const apiUrl = `${process.env.RADARR_URL}/api/v3`;
 
-const qualityProfileId = process.env.RADARR_QUALITY_PROFILE;
+const qualityProfileId = parseInt(process.env.RADARR_QUALITY_PROFILE);
 const rootFolderPath = process.env.RADARR_FOLDER;
 
 /**
  * Adds the specfied movie to the user's Radarr library.
  *
- * @param tmdbId he The Movie DB ID for the movie to add
+ * @param tmdbId The Movie DB ID for the movie to add
  * @param title The title of this movie
  * @returns The added movie
  *
