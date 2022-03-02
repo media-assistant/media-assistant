@@ -16,10 +16,10 @@ services:
     image: ghrc.io/nielsrowinbik/media-assistant
     container_name: media-assistant
     environment:
-      RADARR_URL: https://radarr.example.com
       RADARR_API_KEY: abcdefghijklmnopqrstuvwxyz
-      SONARR_URL: https://sonarr.example.com
-      SONARR_API_KEY: abcdefghijklmnopqrstuvwxyz
+      RADARR_FOLDER: /movies
+      RADARR_QUALITY_PROFILE: 7
+      RADARR_URL: https://radarr.example.com
     ports:
       - 8686:8686
     restart: unless-stopped
@@ -30,10 +30,10 @@ services:
 ```bash
 $ docker run -d \
   --name=media-assistant \
-  -e RADARR_URL=https://radarr.example.com \
   -e RADARR_API_KEY:=abcdefghijklmnopqrstuvwxyz \
-  -e SONARR_URL=https://sonarr.example.com \
-  -e SONARR_API_KEY=abcdefghijklmnopqrstuvwxyz \
+  -e RADARR_FOLDER=/films \
+  -e RADARR_QUALITY_PROFILE=7 \
+  -e RADARR_URL=https://radarr.example.com \
   -p 8686:8686 \
   --restart unless-stopped \
   ghrc.io/nielsrowinbik/media-assistant
