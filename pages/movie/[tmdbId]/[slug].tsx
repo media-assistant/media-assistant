@@ -3,10 +3,10 @@ import type { Download, Movie } from "@/lib/types";
 import ActionsBar from "@/components/ActionsBar";
 import { Disclosure } from "@headlessui/react";
 import type { GetServerSideProps } from "next";
+import GoBack from "@/components/GoBack";
 import Head from "next/head";
 import Image from "next/image";
 import LibraryButton from "@/components/LibraryButton";
-import Link from "next/link";
 import Well from "@/components/Well";
 import cn from "classnames";
 import { get } from "@/lib/fetch";
@@ -32,11 +32,11 @@ const MovieDetail = ({ movie }: MovieDetail) => {
       </Head>
       <header className="relative aspect-video w-full">
         <nav className="absolute inset-0 bottom-auto z-10 flex">
-          <Link href="/">
-            <a className="p-3">
+          <GoBack>
+            <button className="p-3">
               <ArrowLeftIcon className="h-6 w-6" />
-            </a>
-          </Link>
+            </button>
+          </GoBack>
         </nav>
         <Image
           alt={`Thumbnail for trailer for ${movie.title}`}
