@@ -1,5 +1,6 @@
 import Carousel from "@/components/Carousel";
 import type { GetServerSideProps } from "next";
+import Head from "next/head";
 import Image from "next/image";
 import type { Movie } from "@/lib/types";
 import { getRecentMovies } from "@/lib/movies";
@@ -11,6 +12,9 @@ type IndexPage = {
 const IndexPage = ({ movies }: IndexPage) => {
   return (
     <>
+      <Head>
+        <title>Media Assistant</title>
+      </Head>
       <header></header>
       <main className="space-y-8">
         <section>
