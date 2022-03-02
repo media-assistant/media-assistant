@@ -67,24 +67,24 @@ export const post = async <T>(
 export const put = async <T>(
   input: RequestInfo,
   init?: RequestInit | undefined
-): Promise<T> => customFetch(input, { method: "PUT", ...init });
+): Promise<T> => customFetch<T>(input, { method: "PUT", ...init });
 
 export const patch = async <T>(
   input: RequestInfo,
   init?: RequestInit | undefined
-): Promise<T> => customFetch(input, { method: "PATCH", ...init });
+): Promise<T> => customFetch<T>(input, { method: "PATCH", ...init });
 
 export const del = async <T>(
   input: RequestInfo,
   init?: RequestInit | undefined
-): Promise<T> => customFetch(input, { method: "DELETE", ...init });
+): Promise<T> => customFetch<T>(input, { method: "DELETE", ...init });
 
 export const upload = async <T>(
   input: RequestInfo,
   form_data: FormData,
   init?: RequestInit | undefined
 ): Promise<T> =>
-  customFetch(input, {
+  customFetch<T>(input, {
     method: "PUT",
     ...init,
     body: form_data,
