@@ -190,7 +190,7 @@ const transform = ({
   rating: ratings.value * 10,
   runtime,
   runtimeString: `${Math.floor(runtime / 60)} hr ${runtime % 60} min`,
-  slug: slugify(title, { lower: true }),
+  slug: slugify(title, { lower: true, strict: true }),
   title,
   tmdbId,
   year,
