@@ -11,7 +11,7 @@ import useEmblaCarousel from "embla-carousel-react";
 
 type ExtendedBase<T extends ElementType> = PolymorphicBase<T> & {
   // eslint-disable-next-line no-unused-vars
-  onChange: (index: number) => void;
+  onChange?: (index: number) => void;
 };
 
 const CarouselRoot = <T extends ElementType>({
