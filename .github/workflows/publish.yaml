@@ -27,7 +27,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v3
         with:
-          images: ghcr.io/nielsrowinbik/media-assistant
+          images: ghcr.io/media-assistant/media-assistant
 
       - name: 🛠 Build image and push to GitHub Container Registry
         uses: docker/build-push-action@v2

@@ -13,7 +13,7 @@ version: "3.8"
 
 services:
   media-assistant:
-    image: ghrc.io/nielsrowinbik/media-assistant
+    image: ghrc.io/media-assistant/media-assistant
     container_name: media-assistant
     environment:
       RADARR_API_KEY: abcdefghijklmnopqrstuvwxyz
@@ -36,7 +36,7 @@ $ docker run -d \
   -e RADARR_URL=https://radarr.example.com \
   -p 8686:8686 \
   --restart unless-stopped \
-  ghrc.io/nielsrowinbik/media-assistant
+  ghrc.io/media-assistant/media-assistant
 ```
 
 ## Development
@@ -44,7 +44,7 @@ $ docker run -d \
 ### Clone the repository
 
 ```bash
-$ git clone https://github.com/nielsrowinbik/media-assistant
+$ git clone https://github.com/media-assistant/media-assistant
 $ cd media-assistant
 ```
 
