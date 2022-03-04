@@ -1,8 +1,8 @@
 import { HomeIcon, SearchIcon } from "@heroicons/react/solid";
 import Link from "next/link";
 
-const Nav = () => (
-  <nav className="fixed inset-0 top-auto flex h-16 items-center justify-center bg-neutral-800">
+const BottomNav = () => (
+  <nav className="fixed inset-0 top-auto flex h-16 items-center justify-center bg-neutral-800 md:hidden">
     <Link href="/">
       <a className="flex flex-auto flex-col items-center justify-center">
         <HomeIcon className="h-6 w-6" /> Home
@@ -17,4 +17,4 @@ const Nav = () => (
   </nav>
 );
 
-export default Nav;
+export default BottomNav;

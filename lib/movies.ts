@@ -66,8 +66,6 @@ export const getMovie = async (tmdbId: number): Promise<Movie | undefined> => {
   const params = qs.stringify({ apiKey, term: `tmdb:${tmdbId}` });
   const movie = await get<RadarrMovie[]>(`${apiUrl}/movie/lookup?${params}`);
 
-  console.log(movie);
-
   return transform(movie[0]);
 };
 

@@ -1,8 +1,8 @@
-import Carousel from "@/components/Carousel";
 import type { GetServerSideProps } from "next";
 import Head from "next/head";
-import Image from "next/image";
 import type { Movie } from "@/lib/types";
+import Slider from "@/components/Slider";
+import TitleCard from "@/components/TitleCard";
 import { getRecentMovies } from "@/lib/movies";
 
 type IndexPage = {
@@ -17,27 +17,22 @@ const IndexPage = ({ movies }: IndexPage) => {
       </Head>
       <main className="space-y-8 px-6">
         <section>
-          <h2 className="text-xl font-bold">Recently added movies</h2>
-          <Carousel
-            align="start"
-            className="-mx-6"
-            skipSnaps
-            slidesToScroll={2}
-          >
-            {movies.map(({ poster, slug, title, tmdbId }, i) => (
-              <Carousel.LinkItem href={`/movie/${tmdbId}/${slug}`} key={tmdbId}>
-                <div className="relative h-full w-full">
-                  <Image
-                    alt={`Poster for ${title}`}
-                    className="rounded-lg"
-                    layout="fill"
-                    src={poster}
-                  />
-                </div>
-                <span>{title}</span>
-              </Carousel.LinkItem>
+          <Slider.Header as="h2">Recently added movies</Slider.Header>
+          <Slider
+            isEmpty={false}
+            isLoading={false}
+            items={movies.map(({ id, slug, title, tmdbId, poster, year }) => (
+              <TitleCard
+                href={`/movie/${tmdbId}/${slug}`}
+                id={id}
+                key={tmdbId}
+                poster={poster}
+                title={title}
+                year={year}
+              />
             ))}
-          </Carousel>
+            sliderKey="recent"
+          />
         </section>
       </main>
     </>
@@ -45,7 +40,7 @@ const IndexPage = ({ movies }: IndexPage) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const movies = await getRecentMovies(6);
+  const movies = await getRecentMovies(20);
 
   return {
     props: {
