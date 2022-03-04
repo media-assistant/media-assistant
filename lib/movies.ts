@@ -54,45 +54,6 @@ export const deleteMovie = async (tmdbId: number) => {
 };
 
 /**
- * Finds and returns a movie within user's Radarr library.
- *
- * @param tmdbId The The Movie DB ID for the movie to find
- * @returns The movie, if found, otherwise undefined
- *
- * @internal
- */
-const _getMovieFromLibrary = async (tmdbId: number) => {
-  const params = qs.stringify({ apiKey, tmdbId });
-  const movieList = await get<RadarrMovie[]>(`${apiUrl}/movie?${params}`);
-
-  // If the requested movie is part of the user's library, it should be
-  // the only item returned by Radarr. If that is the case, return it:
-  if (movieList.length === 1 && movieList[0].tmdbId === tmdbId) {
-    const movie = movieList[0];
-    return transform(movie);
-  }
-
-  // If not, this movie isn't in our library, return undefined:
-  return undefined;
-};
-
-/**
- * Finds and returns a specific movie through Radarr's lookup API.
- *
- * @param tmdbId The The Movie DB ID for the movie to find
- * @returns The movie, if found, otherwise undefined
- *
- * @internal
- */
-const _getMovieFromLookup = async (tmdbId: number, title: string) => {
-  const lookupList = await searchMovies(title);
-
-  // The movie we're looking for should be among the
-  // search results, so look for its TMDB ID:
-  return lookupList.find((result) => result.tmdbId === tmdbId);
-};
-
-/**
  * Finds and returns a specific movie. Looks within the user's Radarr library first,
  * and falls back to Radarr's lookup API if the title is provided.
  *
@@ -101,12 +62,14 @@ const _getMovieFromLookup = async (tmdbId: number, title: string) => {
  * @returns The movie, if found, otherwise undefined
  *
  */
-export const getMovie = async (
-  tmdbId: number,
-  title?: string
-): Promise<Movie | undefined> =>
-  (await _getMovieFromLibrary(tmdbId)) ??
-  (title && (await _getMovieFromLookup(tmdbId, title)));
+export const getMovie = async (tmdbId: number): Promise<Movie | undefined> => {
+  const params = qs.stringify({ apiKey, term: `tmdb:${tmdbId}` });
+  const movie = await get<RadarrMovie[]>(`${apiUrl}/movie/lookup?${params}`);
+
+  console.log(movie);
+
+  return transform(movie[0]);
+};
 
 /**
  * Finds and returns all movies in the user's Radarr library.
@@ -170,7 +133,6 @@ const transform = ({
   monitored,
   overview,
   images,
-  ratings,
   runtime,
   year,
   youTubeTrailerId,
@@ -187,7 +149,6 @@ const transform = ({
   monitored,
   overview,
   poster: images[0]?.remoteUrl,
-  rating: ratings.value * 10,
   runtime,
   runtimeString: `${Math.floor(runtime / 60)} hr ${runtime % 60} min`,
   slug: slugify(title, { lower: true, strict: true }),

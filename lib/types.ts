@@ -60,10 +60,6 @@ export type RadarrMovie = {
   genres: string[];
   tags: string[];
   added: string;
-  ratings: {
-    votes: number;
-    value: number;
-  };
   collection: unknown;
   status: string;
 };
@@ -79,7 +75,6 @@ export type Movie = {
   monitored: boolean; // Whether the movie is monitored or not. Should be true when `added` is a date.
   overview: string; // Brief summary of the movie.
   poster?: string; // URL pointing at the poster for this movie. Optional.
-  rating: number; // Rating for this movie, in percentage.
   runtime: number; // Runtime of this movie in minutes.
   runtimeString: string; // Runtime of this movie as a string. Example: `1 hr 30 min`.
   slug: string; // Slug representation of the title of this movie.

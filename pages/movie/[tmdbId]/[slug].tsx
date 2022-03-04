@@ -1,4 +1,4 @@
-import { ArrowLeftIcon, HeartIcon, PlayIcon } from "@heroicons/react/solid";
+import { ArrowLeftIcon, PlayIcon } from "@heroicons/react/solid";
 import type { Download, Movie } from "@/lib/types";
 import ActionsBar from "@/components/ActionsBar";
 import { Disclosure } from "@headlessui/react";
@@ -65,10 +65,6 @@ const MovieDetail = ({ movie }: MovieDetail) => {
         <section className="prose prose-invert relative -mt-9">
           <h1>{movie.title}</h1>
           <p className="space-x-3 text-xs">
-            <span>
-              <HeartIcon className="inline h-4 w-4 fill-red-400 align-bottom" />{" "}
-              {movie.rating}%
-            </span>
             {movie.certification && (
               <span className="rounded-sm border px-2 py-px">
                 {movie.certification}
@@ -151,9 +147,8 @@ const MovieDetail = ({ movie }: MovieDetail) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-  const slug = params.slug as string;
   const tmdbId = parseInt(params.tmdbId as string);
-  const movie = await getMovie(tmdbId, slug);
+  const movie = await getMovie(tmdbId);
 
   if (!movie) {
     return {
