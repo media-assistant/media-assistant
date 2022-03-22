@@ -33,10 +33,10 @@ const MovieDetail = ({ movie }: MovieDetail) => {
       <Head>
         <title>{movie.title} - Media Assistant</title>
       </Head>
-      <header className="relative aspect-video w-full">
+      <header className="relative aspect-video max-h-[45vh] w-full md:aspect-auto md:h-screen">
         <nav className="absolute inset-0 bottom-auto z-10 flex">
           <GoBack>
-            <button className="p-3">
+            <button className="p-3 md:hidden">
               <ArrowLeftIcon className="h-6 w-6" />
             </button>
           </GoBack>
@@ -45,11 +45,11 @@ const MovieDetail = ({ movie }: MovieDetail) => {
           alt={`Thumbnail for trailer for ${movie.title}`}
           layout="fill"
           objectFit="cover"
-          objectPosition="center"
+          objectPosition="top"
           priority
           src={movie.fanart}
         />
-        <div className="bg-opacity-0.5 absolute inset-0 flex items-center justify-center bg-gradient-to-b from-transparent via-transparent to-[rgba(0,0,0,0.8)]">
+        <div className="bg-opacity-0.5 absolute inset-0 flex items-center justify-center bg-gradient-to-b from-transparent via-transparent to-[rgba(0,0,0,0.8)] md:hidden">
           <a
             className="rounded-full bg-black bg-opacity-50 py-2 px-3 text-xs"
             href={`https://youtu.be/${movie.youTubeTrailerId}`}
@@ -62,7 +62,7 @@ const MovieDetail = ({ movie }: MovieDetail) => {
         </div>
       </header>
       <main className="px-6">
-        <section className="prose prose-invert relative -mt-9">
+        <section className="prose prose-invert relative -mt-9 md:mt-0">
           <h1>{movie.title}</h1>
           <p className="space-x-3 text-xs">
             {movie.certification && (
@@ -78,7 +78,10 @@ const MovieDetail = ({ movie }: MovieDetail) => {
             {({ open }) => (
               <>
                 <Disclosure.Panel
-                  className={cn({ "line-clamp-3": !open }, "overflow-hidden")}
+                  className={cn(
+                    { "line-clamp-3 md:line-clamp-none": !open },
+                    "overflow-hidden"
+                  )}
                   static
                 >
                   <p>{movie.overview}</p>
@@ -91,7 +94,7 @@ const MovieDetail = ({ movie }: MovieDetail) => {
                 </Disclosure.Panel>
                 <Disclosure.Button
                   className={cn(
-                    "block",
+                    "block md:hidden",
                     {
                       "absolute right-0 bottom-0 bg-gradient-to-l from-neutral-900 via-neutral-900 to-transparent pl-5":
                         !open,
